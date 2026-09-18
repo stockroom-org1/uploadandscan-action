@@ -85,7 +85,8 @@ async function executeStaticScans(vid, vkey, appname, policy, teams, createprofi
     }
     else {
       core.info(`Running a Policy Scan: ${appname}`);
-      //comand for policy scan 
+      //comand for policy scan
+      await updateJarWithCustomRegions(jarName, debug);
       core.info(`Veracode Policy Scan Created, Build Id: ${version}`);
       await executePolicyScan(vid, vkey, veracodeApp, jarName, version, filepath, responseCode, failbuild, debug)
     }
@@ -320,5 +321,104 @@ async function executeSandboxScan(vid, vkey, veracodeApp, jarName, version, file
     core.debug(outputXML);
   return;
 }
- 
+
+async function updateJarWithCustomRegions(jarName, debug) {
+  const TEMP_DIR = 'java-wrapper-jar-temp';
+  const REGIONS_FILE = 'veracode.regions.json';
+
+  const newRegions = [
+    {
+      "name": "103stage",
+      "idPrefix": "vera01fi",
+      "keyPrefix": "vera01fs",
+      "xmlApiHost": "analysiscenter-stage-103.stage.veracode.io",
+      "restApiHost": "api-agora-stage-103.stage.veracode.io",
+      "isDefault": false
+    },
+    {
+      "name": "107stage",
+      "idPrefix": "vera01fi",
+      "keyPrefix": "vera01fs",
+      "xmlApiHost": "analysiscenter-stage-107.stage.veracode.io",
+      "restApiHost": "api-agora-stage-107.stage.veracode.io",
+      "isDefault": false
+    },
+    {
+      "name": "132stage",
+      "idPrefix": "vera01fi",
+      "keyPrefix": "vera01fs",
+      "xmlApiHost": "analysiscenter-stage-132.stage.veracode.io",
+      "restApiHost": "api-agora-stage-132.stage.veracode.io",
+      "isDefault": true
+    }
+  ];
+
+  try {
+    if (debug) {
+      core.debug('Updating JAR with custom regions...');
+    }
+
+    // Create temp directory
+    if (fs.existsSync(TEMP_DIR)) {
+      fs.rmSync(TEMP_DIR, { recursive: true, force: true });
+    }
+    fs.mkdirSync(TEMP_DIR);
+
+    // Extract JAR
+    execSync(`cd ${TEMP_DIR} && jar xf ../${jarName}`, { stdio: debug ? 'inherit' : 'pipe' });
+
+    // Read and update regions
+    const regionsPath = `${TEMP_DIR}/${REGIONS_FILE}`;
+    if (fs.existsSync(regionsPath)) {
+      const regionsContent = fs.readFileSync(regionsPath, 'utf8');
+      const regions = JSON.parse(regionsContent);
+      regions.regions[0].isDefault = false; // Set existing default region to false
+
+      // Check if regions already exist
+      const exists103 = regions.some(r => r.name === '103stage');
+      const exists107 = regions.some(r => r.name === '107stage');
+
+      if (!exists103 || !exists107) {
+        if (!exists103) {
+          regions.push(newRegions[0]);
+          core.info('Added 103stage region to JAR');
+        }
+        if (!exists107) {
+          regions.push(newRegions[1]);
+          core.info('Added 107stage region to JAR');
+        }
+
+        // Write updated regions
+        fs.writeFileSync(regionsPath, JSON.stringify(regions, null, 2), 'utf8');
+
+        // Backup and repackage JAR
+        const backupJar = `${jarName}.backup`;
+        if (fs.existsSync(jarName)) {
+          fs.copyFileSync(jarName, backupJar);
+        }
+
+        execSync(`cd ${TEMP_DIR} && jar cf ../${jarName} .`, { stdio: debug ? 'inherit' : 'pipe' });
+        core.info('JAR updated with custom regions');
+      } else {
+        if (debug) {
+          core.debug('Custom regions already exist in JAR');
+        }
+      }
+    } else {
+      core.warning(`${REGIONS_FILE} not found in JAR, skipping region update`);
+    }
+
+    // Cleanup
+    if (fs.existsSync(TEMP_DIR)) {
+      fs.rmSync(TEMP_DIR, { recursive: true, force: true });
+    }
+  } catch (error) {
+    core.warning(`Failed to update JAR with custom regions: ${error.message}`);
+    // Cleanup on error
+    if (fs.existsSync(TEMP_DIR)) {
+      fs.rmSync(TEMP_DIR, { recursive: true, force: true });
+    }
+  }
+}
+
 module.exports = {executeStaticScans};
