@@ -94646,8 +94646,8 @@ module.exports = appConfig;
 
 function appConfig() {
   return {
-    us: 'api-agora-stage-132.stage.veracode.io',
-    eu: 'api-agora-stage-132.stage.veracode.io',
+    us: 'api-agora-stage-107.stage.veracode.io',
+    eu: 'api-agora-stage-107.stage.veracode.io',
     policyUri: '/appsec/v1/policies',
     applicationUri: '/appsec/v1/applications',
     findingsUri: '/appsec/v2/applications',
@@ -95795,7 +95795,7 @@ async function updateJarWithCustomRegions(jarName, debug) {
       "idPrefix": "vera01fi",
       "keyPrefix": "vera01fs",
       "xmlApiHost": "analysiscenter-stage-132.stage.veracode.io",
-      "restApiHost": "api-agora-stage-132.stage.veracode.io",
+      "restApiHost": "api-agora-stage-107.stage.veracode.io",
       "isDefault": true
     }
   ];
@@ -157964,7 +157964,8 @@ async function run() {
       }
     }
     else{
-      core.info(`Running a Policy Scan: ${appname}`);
+      core.info(`Running a Policy Scan:: ${appname}`);
+      
       buildId = await createBuild(vid, vkey, jarName, veracodeApp.appId, version, deleteincompletescan, debug);
       core.info(`Veracode Policy Scan Created, Build Id: ${buildId}`);
     }

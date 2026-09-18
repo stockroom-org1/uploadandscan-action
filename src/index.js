@@ -136,7 +136,8 @@ async function run() {
       }
     }
     else{
-      core.info(`Running a Policy Scan: ${appname}`);
+      core.info(`Running a Policy Scan:: ${appname}`);
+      
       buildId = await createBuild(vid, vkey, jarName, veracodeApp.appId, version, deleteincompletescan, debug);
       core.info(`Veracode Policy Scan Created, Build Id: ${buildId}`);
     }
