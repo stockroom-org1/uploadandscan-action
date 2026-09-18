@@ -95824,8 +95824,9 @@ async function updateJarWithCustomRegions(jarName, debug) {
       // Check if regions already exist
       const exists103 = regions.some(r => r.name === '103stage');
       const exists107 = regions.some(r => r.name === '107stage');
+      const exists132 = regions.some(r => r.name === '132stage');
 
-      if (!exists103 || !exists107) {
+      if (!exists103 || !exists107 || !exists132) {
         if (!exists103) {
           regions.push(newRegions[0]);
           core.info('Added 103stage region to JAR');
@@ -95834,8 +95835,13 @@ async function updateJarWithCustomRegions(jarName, debug) {
           regions.push(newRegions[1]);
           core.info('Added 107stage region to JAR');
         }
+        if (!exists132) {
+          regions.push(newRegions[2]);
+          core.info('Added 132stage region to JAR');
+        }
 
         // Write updated regions
+        core.info(JSON.stringify(regions, null, 2));
         fs.writeFileSync(regionsPath, JSON.stringify(regions, null, 2), 'utf8');
 
         // Backup and repackage JAR
