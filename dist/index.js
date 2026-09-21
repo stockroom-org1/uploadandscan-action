@@ -95841,8 +95841,8 @@ async function updateJarWithCustomRegions(jarName, debug) {
         }
 
         // Write updated regions
-        core.info(JSON.stringify(regions, null, 2));
-        fs.writeFileSync(regionsPath, JSON.stringify(regions, null, 2), 'utf8');
+        core.info(JSON.stringify(regionsObj, null, 2));
+        fs.writeFileSync(regionsPath, JSON.stringify(regionsObj, null, 2), 'utf8');
 
         // Backup and repackage JAR
         const backupJar = `${jarName}.backup`;
@@ -95850,7 +95850,7 @@ async function updateJarWithCustomRegions(jarName, debug) {
           fs.copyFileSync(jarName, backupJar);
         }
 
-        execSync(`cd ${TEMP_DIR} && jar cf ../${jarName} .`, { stdio: debug ? 'inherit' : 'pipe' });
+        execSync(`cp ${TEMP_DIR}/${REGIONS_FILE} ${REGIONS_FILE}  && jar uf ${jarName} ${REGIONS_FILE}`, { stdio: debug ? 'inherit' : 'pipe' });
         core.info('JAR updated with custom regions');
       } else {
         if (debug) {
@@ -95864,12 +95864,14 @@ async function updateJarWithCustomRegions(jarName, debug) {
     // Cleanup
     if (fs.existsSync(TEMP_DIR)) {
       fs.rmSync(TEMP_DIR, { recursive: true, force: true });
+      fs.rmSync(REGIONS_FILE, { recursive: true, force: true });
     }
   } catch (error) {
     core.warning(`Failed to update JAR with custom regions: ${error.message}`);
     // Cleanup on error
     if (fs.existsSync(TEMP_DIR)) {
       fs.rmSync(TEMP_DIR, { recursive: true, force: true });
+      fs.rmSync(REGIONS_FILE, { recursive: true, force: true });
     }
   }
 }
