@@ -1,0 +1,41 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Upload and Scan",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "--enable-source-maps"
+      ],
+     
+      "args": [
+        "${workspaceFolder}/src/index.js"
+      ],
+      "env": {
+        "INPUT_VID": "ac4caa9bb895d48ec4696d9a2624554e",
+        "INPUT_VKEY": "5fd7e9bc6fb80c4ff9ee0f7cc43cf3e170873121c7fcdad18555b8c2291c4a9fe21a53b438e69c8cbbfd31c56c6c2af0a7914b1f982b869df7ca1eef85e19c34",
+        "INPUT_APPNAME": "test-app-1",
+        "INPUT_CREATEPROFILE": "true",
+        "INPUT_POLICY": "Veracode Recommended Medium + SCA",
+        //"INPUT_BUSINESSID": "660e8400-e29b-41d4-a716-446655440010",
+        //"INPUT_ARTIFACTS_LIST": "b0803ce7-8e3d-421a-8126-e5a2bd0a865f",
+        "INPUT_VERSION": "35571911385-20260921-072117",
+        "INPUT_FILEPATH": "./veracode_artifact_directory/",
+        "INPUT_SCANTIMEOUT": "30",
+        "INPUT_FAILBUILD": "true",
+        "INPUT_GITREPOSITORYURL": "https://github.com/stockroom-org1/stockroom-frontend",
+        "INPUT_DELETEINCOMPLETESCAN": "true",
+        "INPUT_WORKFLOWAPP": "true",
+        "INPUT_DEBUG": "false",
+        "INPUT_CREATESANDBOX": "false",
+        "INPUT_PLATFORMTYPE": "CLOUD"
+      },
+      "sourceMaps": true,
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    }
+  ]
+}
