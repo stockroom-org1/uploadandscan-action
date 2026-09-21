@@ -325,7 +325,6 @@ async function executeSandboxScan(vid, vkey, veracodeApp, jarName, version, file
 async function updateJarWithCustomRegions(jarName, debug) {
   const TEMP_DIR = 'java-wrapper-jar-temp';
   const REGIONS_FILE = 'veracode.regions.json';
-  const TEMP_REGIONS_FILE = `${TEMP_DIR}/${REGIONS_FILE}`;
 
   const newRegions = [
     {
@@ -365,25 +364,16 @@ async function updateJarWithCustomRegions(jarName, debug) {
     }
     fs.mkdirSync(TEMP_DIR);
 
-    // Extract only the regions file from JAR
-    try {
-      execSync(`jar xf ${jarName} ${REGIONS_FILE}`, { cwd: TEMP_DIR, stdio: debug ? 'inherit' : 'pipe' });
-    } catch (error) {
-      core.warning(`${REGIONS_FILE} not found in JAR, skipping region update`);
-      // Cleanup
-      if (fs.existsSync(TEMP_DIR)) {
-        fs.rmSync(TEMP_DIR, { recursive: true, force: true });
-      }
-      return;
-    }
+    // Extract JAR
+    execSync(`cd ${TEMP_DIR} && jar xf ../${jarName}`, { stdio: debug ? 'inherit' : 'pipe' });
 
     // Read and update regions
-    if (fs.existsSync(TEMP_REGIONS_FILE)) {
-      const regionsContent = fs.readFileSync(TEMP_REGIONS_FILE, 'utf8');
+    const regionsPath = `${TEMP_DIR}/${REGIONS_FILE}`;
+    if (fs.existsSync(regionsPath)) {
+      const regionsContent = fs.readFileSync(regionsPath, 'utf8');
       const regionsObj = JSON.parse(regionsContent);
       regionsObj.regions[0].isDefault = false; // Set existing default region to false
       let regions = regionsObj.regions;
-
       // Check if regions already exist
       const exists103 = regions.some(r => r.name === '103stage');
       const exists107 = regions.some(r => r.name === '107stage');
@@ -403,25 +393,25 @@ async function updateJarWithCustomRegions(jarName, debug) {
           core.info('Added 132stage region to JAR');
         }
 
-        // Write updated regions to temp file
-        const updatedRegionsContent = JSON.stringify(regionsObj, null, 2);
-        core.info(updatedRegionsContent);
-        fs.writeFileSync(TEMP_REGIONS_FILE, updatedRegionsContent, 'utf8');
+        // Write updated regions
+        core.info(JSON.stringify(regions, null, 2));
+        fs.writeFileSync(regionsPath, JSON.stringify(regions, null, 2), 'utf8');
 
-        // Backup original JAR
+        // Backup and repackage JAR
         const backupJar = `${jarName}.backup`;
         if (fs.existsSync(jarName)) {
           fs.copyFileSync(jarName, backupJar);
         }
 
-        // Update the JAR file in-place (preserves manifest)
-        execSync(`jar uf ../${jarName} ${REGIONS_FILE}`, { cwd: TEMP_DIR, stdio: debug ? 'inherit' : 'pipe' });
+        execSync(`cd ${TEMP_DIR} && jar cf ../${jarName} .`, { stdio: debug ? 'inherit' : 'pipe' });
         core.info('JAR updated with custom regions');
       } else {
         if (debug) {
           core.debug('Custom regions already exist in JAR');
         }
       }
+    } else {
+      core.warning(`${REGIONS_FILE} not found in JAR, skipping region update`);
     }
 
     // Cleanup
