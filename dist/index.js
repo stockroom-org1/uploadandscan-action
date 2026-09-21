@@ -95788,7 +95788,7 @@ async function updateJarWithCustomRegions(jarName, debug) {
       "keyPrefix": "vera01fs",
       "xmlApiHost": "analysiscenter-stage-107.stage.veracode.io",
       "restApiHost": "api-agora-stage-107.stage.veracode.io",
-      "isDefault": false
+      "isDefault": true
     },
     {
       "name": "132stage",
@@ -95796,7 +95796,7 @@ async function updateJarWithCustomRegions(jarName, debug) {
       "keyPrefix": "vera01fs",
       "xmlApiHost": "analysiscenter-stage-132.stage.veracode.io",
       "restApiHost": "api-agora-stage-107.stage.veracode.io",
-      "isDefault": true
+      "isDefault": false
     }
   ];
 
@@ -95818,9 +95818,9 @@ async function updateJarWithCustomRegions(jarName, debug) {
     const regionsPath = `${TEMP_DIR}/${REGIONS_FILE}`;
     if (fs.existsSync(regionsPath)) {
       const regionsContent = fs.readFileSync(regionsPath, 'utf8');
-      const regions = JSON.parse(regionsContent);
-      regions.regions[0].isDefault = false; // Set existing default region to false
-
+      const regionsObj = JSON.parse(regionsContent);
+      regionsObj.regions[0].isDefault = false; // Set existing default region to false
+      let regions = regionsObj.regions;
       // Check if regions already exist
       const exists103 = regions.some(r => r.name === '103stage');
       const exists107 = regions.some(r => r.name === '107stage');
