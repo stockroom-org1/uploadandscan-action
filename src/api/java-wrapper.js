@@ -3,8 +3,9 @@ const { exec, execFileSync } = require('child_process');
 const execPromise = util.promisify(exec);
 const core = require('@actions/core');
 
-const javaWrapperDownloadUrl 
-  = 'https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java'
+const javaWrapperDownloadUrl = 'https://maven.laputa.veracode.io/api/object/snapshots/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java';
+//  = 'https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java'
+///26.10.20.0-SNAPSHOT/vosp-api-wrappers-java-26.10.20.0-20260930.172023-3.jar
 
 async function downloadJar ()  {
   // get the latest version of the Veracode Java wrapper
@@ -12,10 +13,12 @@ async function downloadJar ()  {
   const runnerOS = process.env.RUNNER_OS;
   const curlCommand = `curl ${javaWrapperDownloadUrl}/maven-metadata.xml`;
   try {
-    const { stdout } = await execPromise(curlCommand);
-    const lines = stdout.trim().split('\n');
-    const regex = /<latest>([\d.]+)<\/latest>/;
-    latestVersion = lines.find(line => regex.test(line)).match(regex)[1];
+    //const { stdout } = await execPromise(curlCommand);
+    //const lines = stdout.trim().split('\n');
+    //const regex = /<latest>([\d.]+)<\/latest>/;
+    //latestVersion = lines.find(line => regex.test(line)).match(regex)[1];
+    latestVersion = '26.10.20.0-SNAPSHOT';
+    buildVersion = '26.10.20.0-20260930.172023-3';
   } catch (error) {
     core.info(`Error executing curl command: ${error.message}`);
   }
@@ -23,8 +26,8 @@ async function downloadJar ()  {
 
   // download the Veracode Java wrapper
   if(runnerOS == 'Windows'){
-    const outFileName = `vosp-api-wrappers-java-${latestVersion}.jar`
-    const jarUrl = `${javaWrapperDownloadUrl}/${latestVersion}/vosp-api-wrappers-java-${latestVersion}.jar`
+    const outFileName = `vosp-api-wrappers-java-${buildVersion}.jar`
+    const jarUrl = `${javaWrapperDownloadUrl}/${latestVersion}/vosp-api-wrappers-java-${buildVersion}.jar`
     const powershellCommand = `powershell.exe Invoke-WebRequest -Uri "${jarUrl}" -OutFile "${outFileName}"`
     try {
       await execPromise(powershellCommand);
@@ -33,15 +36,15 @@ async function downloadJar ()  {
     }
 
   }else{
-    const wgetCommand = `wget ${javaWrapperDownloadUrl}/${latestVersion}/vosp-api-wrappers-java-${latestVersion}.jar`;
+    const wgetCommand = `wget ${javaWrapperDownloadUrl}/${latestVersion}/vosp-api-wrappers-java-${buildVersion}.jar`;
     try {
       await execPromise(wgetCommand);
     } catch (error) {
       core.info(`Error executing wget command: ${error.message}`);
     }
   }
-  core.info(`Veracode Java wrapper downloaded: vosp-api-wrappers-java-${latestVersion}.jar`);
-  return `vosp-api-wrappers-java-${latestVersion}.jar`;
+  core.info(`Veracode Java wrapper downloaded: vosp-api-wrappers-java-${buildVersion}.jar`);
+  return `vosp-api-wrappers-java-${buildVersion}.jar`;
 }
 
 async function runCommand (command, args = []){
