@@ -19,7 +19,7 @@ inputs:
   createprofile:
     description: 'Create a new profile. Boolean'
     required: true
-    default: false
+
   include:
     description: 'Modules to include in scan'
     required: false
@@ -38,15 +38,15 @@ inputs:
   deleteincompletescan:
     description: 'Delete a broken or running policy scan'
     required: false
-    default: false
+
   failbuild:
     description: 'Fail the build if the scan fails'
     required: false
-    default: true
+
   createsandbox:
     description: 'Create a sandbox for the scan'
     required: false
-    default: false
+
   sandboxname:
     description: 'Sandbox Name'
     required: false
@@ -62,11 +62,11 @@ inputs:
   workflowApp:
     description: 'Specifies whether request is from workflow app'
     required: false
-    default: false
+    default: ''
   debug:
     description: 'Enable or disable debug mode'
     required: false
-    default: false
+    default: ''
 runs:
   using: 'node24'
   main: 'dist/index.js'
