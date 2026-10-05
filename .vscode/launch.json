@@ -21,7 +21,7 @@
         "INPUT_POLICY": "Veracode Recommended Medium + SCA",
         //"INPUT_BUSINESSID": "660e8400-e29b-41d4-a716-446655440010",
         //"INPUT_ARTIFACTS_LIST": "b0803ce7-8e3d-421a-8126-e5a2bd0a865f",
-        "INPUT_VERSION": "37268986786-20261005-054454",
+        "INPUT_VERSION": "35571911385-20260921-072117",
         "INPUT_FILEPATH": "./veracode_artifact_directory/",
         "INPUT_SCANTIMEOUT": "30",
         "INPUT_FAILBUILD": "true",
@@ -30,8 +30,7 @@
         "INPUT_WORKFLOWAPP": "true",
         "INPUT_DEBUG": "false",
         "INPUT_CREATESANDBOX": "false",
-        "INPUT_PLATFORMTYPE": "CLOUD",
-        "VERSION": "37268986786-20261005-054454"
+        "INPUT_PLATFORMTYPE": "CLOUD"
       },
       "sourceMaps": true,
       "skipFiles": [
