@@ -341,15 +341,15 @@ async function updateJarWithCustomRegions(jarName, debug) {
       "keyPrefix": "vera01fs",
       "xmlApiHost": "analysiscenter-stage-107.stage.veracode.io",
       "restApiHost": "api-agora-stage-107.stage.veracode.io",
-      "isDefault": true
+      "isDefault": false
     },
     {
       "name": "132stage",
       "idPrefix": "vera01fi",
       "keyPrefix": "vera01fs",
       "xmlApiHost": "analysiscenter-stage-132.stage.veracode.io",
-      "restApiHost": "api-agora-stage-107.stage.veracode.io",
-      "isDefault": false
+      "restApiHost": "api-agora-stage-132.stage.veracode.io",
+      "isDefault": true
     }
   ];
 
